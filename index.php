@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Instagram2.0</title>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 </head>
@@ -15,9 +16,11 @@
 
    <div class="comment" v-for='(com,index) in coms'>
      <span> автор: {{ com.name }} {{com.surname}} Почта:
-     {{ com.email }} Время:  {{ com.time }}
-     картиночка: {{com.image}}</span>
-     <input type='button' value='Delete' @click='deleteRecord(com.id)'></td>
+     {{ com.email }} Время публикации:  {{ com.time }}</span>  </br>
+     <span>Комментарий:{{com.comment}}</span> </br>
+     <section>
+     <img :src="'uploads/'+ com.image"> </section>
+     <input type='button' value='Delete' @click='deleteRecord(com.id)'>
    </div>
  </br>
 
@@ -36,11 +39,13 @@
       <input type="text" name="comment" v-model="comment">
       </br>
       <label>Job</label>
-      <input type="file" name="image" v-model="image">
+</form>
+<form name="uploader" enctype="multipart/form-data" method="POST">
+        Отправить этот файл: <input name="userfile"type="file" id="your-files" />
+        <button type="submit" name="submit">Загрузить</button>
       </br>
       <input type="button" @click="createCom()" value="Add">
     </form>
-
 </div>
 <script>
 var app = new Vue({
@@ -51,7 +56,7 @@ var app = new Vue({
       surname: '',
       comment: '',
       time:'',
-      image: '',
+      file: '',
       coms: []
   },
   mounted: function () {
@@ -71,12 +76,38 @@ var app = new Vue({
             console.log(error);
         });
     },
+    img: function(){
+    var form_data = new FormData();
+    form_data.append('file', this.file);
+    axios({
+                url: 'image.php',
+                dataType: 'text',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: form_data,
+                type: 'post',
+                success: function(php_script_response){
+                }
+     });
+},
     createCom: function(){
         console.log("Create contact!")
         let formData = new FormData();
         var d= new Date();
         kek=(d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds())
-        console.log("name:", this.name)
+        var control = document.getElementById("your-files");
+    var i = 0,
+        files = control.files,
+        len = files.length;
+ 
+    for (; i < len; i++) {
+        console.log("Filename: " + files[i].name);
+        this.image=files[i].name;
+        console.log("Type: " + files[i].type);
+        console.log("Size: " + files[i].size + " bytes");
+    }
+        console.log("name:", this.image)
         formData.append('name', this.name)
         formData.append('surname', this.surname)
         formData.append('comment', this.comment)
@@ -97,7 +128,7 @@ var app = new Vue({
         .then(function (response) {
             console.log(response)
             app.coms.push(comment)
-            app.resetForm();
+            app.resetForm();app.img();
         })
         .catch(function (response) {
             console.log(response)
@@ -109,7 +140,7 @@ var app = new Vue({
         this.surname = '';
         this.comment = '';
         this.time = '';
-        this.image = '';
+        this.userfile='';
     },
     deleteRecord: function(id){
         let formData = new FormData();
@@ -136,6 +167,28 @@ var app = new Vue({
 }
 )    
 </script>
+<script type="text/javascript">
+    $("form[name='uploader']").submit(function(e) {
+        var formData = new FormData($(this)[0]);
+
+        $.ajax({
+            url: 'image.php',
+            type: "POST",
+            data: formData,
+            async: false,
+            success: function (msg) {
+                alert(msg);
+            },
+            error: function(msg) {
+                alert('Ошибка!');
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+        e.preventDefault();
+    });
+    </script>
 </body>
 </html> 
 <style>
