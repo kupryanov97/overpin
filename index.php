@@ -38,7 +38,6 @@
       <label>Комментарий</label>
       <input type="text" name="comment" v-model="comment">
       </br>
-      <label>Job</label>
 </form>
 <form name="uploader" enctype="multipart/form-data" method="POST">
         Отправить этот файл: <input name="userfile"type="file" id="your-files" />
