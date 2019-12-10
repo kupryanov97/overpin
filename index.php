@@ -37,13 +37,13 @@
       
       <label>Комментарий</label>
       <input type="text" name="comment" v-model="comment">
-      </br><label>Капча</label>
+      </br><label>Введите, пожалуйста. сумму цифр на картинке:</label>
         <span id="aspm"></span></br>
       <input type="text" name="kapcha" v-model="kapcha">
       
 </form>
 <form name="uploader" enctype="multipart/form-data" method="POST">
-        Отправить этот файл: <input name="userfile"type="file" id="your-files" />
+        Выберете картинку: <input name="userfile"type="file" id="your-files" />
         <input type="submit" name="submit" @click="createCom()" value="Add">
       </br>
     </form>
@@ -163,6 +163,7 @@ var app = new Vue({
         this.comment = '';
         this.time = '';
         this.userfile='';
+        this.kapcha='';
     },
     deleteRecord: function(id){
         let formData = new FormData();
