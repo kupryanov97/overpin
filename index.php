@@ -37,7 +37,10 @@
       
       <label>Комментарий</label>
       <input type="text" name="comment" v-model="comment">
-      </br>
+      </br><label>Капча</label>
+        <span id="aspm"></span></br>
+      <input type="text" name="kapcha" v-model="kapcha">
+      
 </form>
 <form name="uploader" enctype="multipart/form-data" method="POST">
         Отправить этот файл: <input name="userfile"type="file" id="your-files" />
@@ -45,7 +48,17 @@
       </br>
     </form>
 </div>
-<script>
+<script type="text/javascript" language="javascript" src="md5.js"></script>
+<script language="javascript">
+function randomNumber(m,n){
+    m = parseInt(m);
+    n = parseInt(n);
+    return Math.floor( Math.random() * (n - m + 1) ) + m;
+};
+
+var aspmA = randomNumber(1,23); 
+var aspmB = randomNumber(1,23); 
+document.getElementById('aspm').innerHTML = aspmA + ' + ' + aspmB + ' = '; 
 var app = new Vue({
   el: '#vueapp',
   data: {
@@ -55,6 +68,7 @@ var app = new Vue({
       comment: '',
       time:'',
       file: '',
+      kapcha: '',
       coms: []
   },
   mounted: function () {
@@ -91,6 +105,16 @@ var app = new Vue({
 },
     createCom: function(){
         console.log("Create contact!")
+        var sum=aspmA+aspmB;
+        if (this.kapcha!=sum){
+            alert("Ах тыж бот...");
+            aspmA = randomNumber(1,23); 
+            aspmB = randomNumber(1,23); 
+            document.getElementById('aspm').innerHTML = aspmA + ' + ' + aspmB + ' = ';
+            location.reload();
+            app.resetForm();
+            return;
+        }
         let formData = new FormData();
         var d= new Date();
         kek=(d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds())
@@ -175,7 +199,6 @@ var app = new Vue({
             data: formData,
             async: false,
             success: function (msg) {
-                alert(msg);
             },
             error: function(msg) {
                 alert('Ошибка!');
