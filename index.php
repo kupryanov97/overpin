@@ -42,9 +42,8 @@
 </form>
 <form name="uploader" enctype="multipart/form-data" method="POST">
         Отправить этот файл: <input name="userfile"type="file" id="your-files" />
-        <button type="submit" name="submit">Загрузить</button>
+        <input type="submit" name="submit" @click="createCom()" value="Add">
       </br>
-      <input type="button" @click="createCom()" value="Add">
     </form>
 </div>
 <script>
